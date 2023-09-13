@@ -1,32 +1,98 @@
-// tạo 1 tro chơi oản tù tì
-let playgame = confirm("Shall we play rock, paper, or scissors?")
-if (playgame) {
-    // play
-    let playerChoice = prompt("Please enter rock, paper, or scissors")
-    if (playerChoice) {
-        let playerOne = playerChoice.trim().toLowerCase()
-        if (playerOne === 'rock' || playerOne === 'paper' || playerOne === 'scissors') {
-            let computerChoice = Math.floor(Math.random() * 3 + 1)
-            let computer = computerChoice === 1 ? "rock" : computerChoice === 2 ? "paper" : "scissors"
-            let result =
-                playerOne === computer
-                    ? "tie game"
-                    : playerOne === "rock" && computer === "paper"
-                        ? `playerOne: ${playerOne}\nComputer: ${computer}\nComputer Win!`
-                        : playerOne === "paper" && computer === "scissors"
-                            ? `playerOne: ${playerOne}\nComputer: ${computer}\nComputer Win!`
-                            : playerOne === "scissors" && computer === "rock"
-                                ? `playerOne: ${playerOne}\nComputer: ${computer}\nComputer Win!`
-                                : `playerOne: ${playerOne}\nComputer: ${computer}\nPlayerOne Win!`
-            alert(result)
-            let playAgain = confirm("Play Again?")
-            playAgain ? location.reload() : alert('OK, thanks for playing')
-        } else {
-            alert("You didn't enter rock, paper, or scissors")
-        }
-    } else {
-        alert("I guess you changed your mind. Maybe next time")
-    }
-} else {
-    alert("ok, maybe last time")
+// rocks, paper, scissors: Refactored with functions
+const initGame = () => {
+    const startGame = confirm("Shall we play rock, paper, or scissors")
+    startGame ? playGame() : alert("ok, maybe next time")
 }
+// game flow function
+const playGame = () => {
+    while (true) {
+        let playerChoice = getPlayerChoice()
+        playerChoice = formatPlayerChoice(playerChoice)
+        if (playerChoice === "") {
+            invalidChoice()
+            continue;
+        }
+        if (!playerChoice) {
+            decidedNotToPlay()
+            break;
+        }
+        playerChoice = eavaluatePlayerChoice(playerChoice)
+        if (!playerChoice) {
+            invalidChoice()
+            continue
+        }
+        const computerChoice = getComputerChoice()
+        const result = determineWinner(playerChoice, computerChoice);
+        displayResult(result)
+        if (askToPlayAgain()) {
+            continue
+        } else {
+            thanksForPlaying();
+            break;
+        }
+    }
+}
+
+const getPlayerChoice = () => {
+    return prompt("Please enter rock, paper, or scissors")
+}
+
+const formatPlayerChoice = (playerChoice) =>{
+    if(playerChoice || playerChoice == ""){
+        return playerChoice.trim().toLowerCase()
+    } else {
+        return false
+    }
+}
+
+const decidedNotToPlay = () => {
+    alert('I guess you changed your mind. Maybe next time')
+}
+
+const eavaluatePlayerChoice = (playerChoice) => {
+    if(
+        playerChoice === 'rock' || playerChoice === 'paper' || playerChoice === 'scissors'
+    ) {
+        return playerChoice
+    } else {
+        return false
+    }
+};
+
+const invalidChoice = () => {
+    alert("You didn't enter rock, paper, or scissors")
+}
+
+const getComputerChoice = () => {
+    const randomNumber = Math.floor(Math.random() * 3)
+    const rpsArray = ["rock", "paper","scissors"]
+    return rpsArray[randomNumber]
+}
+
+const determineWinner = (player, computer) => {
+    const winner =
+    player === computer 
+    ? "Tie game!"
+    : player === "rock" && computer === "paper"
+    ? `PlayerOne: ${player}\nComputer: ${computer}\nComputer wins!`
+    : player === "paper" && computer === "scissors"
+    ? `PlayerOne: ${player}\nComputer: ${computer}\nComputer wins!`
+    : player === "scissors" && computer === "rock"
+    ? `PlayerOne: ${player}\nComputer: ${computer}\nComputer wins!`
+    : `PlayerOne: ${player}\nComputer: ${computer}\nPlayerOne wins!`
+
+    return winner;
+}
+
+const displayResult = (result) => {
+    alert(result)
+}
+const askToPlayAgain = () => {
+    return confirm('Play again')
+}
+
+const thanksForPlaying = () => {
+    alert("Ok, thanks for playing")
+}
+
+initGame()
